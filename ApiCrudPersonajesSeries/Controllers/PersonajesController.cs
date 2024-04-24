@@ -30,9 +30,13 @@ namespace ApiCrudPersonajesSeries.Controllers
             return Ok(personajes);
         }
 
-        [HttpGet]
+        [HttpGet("[action]")]
+        public async Task<ActionResult<List<string>>> Series()
+        {
+            return await this.repo.GetSeriesAsync();
+        }
 
-        [HttpGet("{id}")]
+        [HttpGet("[action]/{id}")]
         public async Task<ActionResult<Personaje>> FindPersonaje(int id)
         {
             return await this.repo.FindPersonajeAsync(id);
@@ -42,7 +46,7 @@ namespace ApiCrudPersonajesSeries.Controllers
         [Route("[action]")]
         public async Task<ActionResult> InsertPersonaje(Personaje personaje)
         {
-            await this.repo.InsertPersonajeAsync(personaje.Id, personaje.Nombre, personaje.Imagen, personaje.Serie);
+            await this.repo.InsertPersonajeAsync( personaje.Nombre, personaje.Imagen, personaje.Serie);
             return Ok();
         }
 

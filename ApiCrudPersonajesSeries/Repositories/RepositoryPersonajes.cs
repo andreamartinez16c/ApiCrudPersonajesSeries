@@ -22,11 +22,17 @@ namespace ApiCrudPersonajesSeries.Repositories
             return await this.context.Personajes.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task InsertPersonajeAsync(int id, string nombre, string imagen, string serie)
+        private async Task<int> GetMaxIdPersonaje()
+        {
+            return await this.context.Personajes
+                .MaxAsync(x => x.Id) + 1;
+        }
+
+        public async Task InsertPersonajeAsync(string nombre, string imagen, string serie)
         {
             Personaje personaje = new Personaje
             {
-                Id = id,
+                Id = await this.GetMaxIdPersonaje(),
                 Nombre = nombre,
                 Imagen = imagen,
                 Serie = serie
@@ -37,14 +43,10 @@ namespace ApiCrudPersonajesSeries.Repositories
 
         public async Task UpdatePersonajesAsync(int id, string nombre, string imagen, string serie)
         {
-            Personaje personaje = new Personaje
-            {
-                Id = id,
-                Nombre = nombre,
-                Imagen = imagen,
-                Serie = serie
-            };
-            this.context.Personajes.Update(personaje);
+            Personaje personaje = await this.FindPersonajeAsync(id);
+            personaje.Serie = serie;
+            personaje.Nombre = nombre;
+            personaje.Imagen = imagen;
             await this.context.SaveChangesAsync();
         }
 
